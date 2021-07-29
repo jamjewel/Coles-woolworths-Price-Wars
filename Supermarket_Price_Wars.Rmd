@@ -1,0 +1,184 @@
+---
+title: "Supermarket Price Wars"
+output: html_notebook
+---
+
+## Individual Details
+
+* Jewel JameS
+
+## Executive Statement
+
+In your own words, provide a brief summary of the investigation. Explain the aim of the investigation, the procedure, sample, variables, main findings and conclusions. Write this section last after you have performed hypothesis testing. (Word count Max: 300 words) 
+
+The main goal of the assignment was to investigate to see if there was a price difference between two superstores: Coles and Woolworths. The approach of the investigation included taking two sets of matching sample products from each of the superstores. The sample size of products was 70. We used stratified sampling approach for random sampling by dividing the products into sub-categories: Food, Vegetable, Snacks, Dairy and Raw. In each of the sub-categories, we used simple random sampling (SRS) approach to randomly select a small sample which was representative of each of the sub-categories. We performed a independent sample t-test for both of the stores. The null hypothesis was that product price was same for both stores. In short, the results of the hypothesis test are not statistically significant.
+
+## Load Packages and Data
+
+```{r}
+# This is a chunk where you can load the necessary data and packages required to reproduce the report
+# You should also include your code required to prepare your data for analysis. 
+
+
+library(readr)
+library(magrittr)
+library(dplyr)
+
+Store <- read_csv("Downloads/Statistics/Store_dataset_v2/StoreColes-Table 1.csv")
+Coles <- read_csv("Downloads/Statistics/Store_dataset_v3/StoreColes-Table 1.csv")
+Woolworths<-read_csv("Downloads/Statistics/Store_dataset_v3/StoreWool-Table 1.csv")
+
+
+
+```
+
+## Summary Statistics
+
+Use R to summarise the data from the investigation. Include an appropriate plot to help visualise the data. Describe the trend. 
+
+```{r}
+# This is a chunk for your summary statistics and visualisation code
+
+#woolworths<- Store  %>% filter(Store=woolworths) 
+
+Store %>% group_by(Category) %>% summarise(Min = min(ColesPrice,na.rm = TRUE),
+                                      Q1 = quantile(ColesPrice,probs = .25,na.rm = TRUE),
+                                      Median = median(ColesPrice, na.rm = TRUE),
+                                      Q3 = quantile(ColesPrice,probs = .75,na.rm = TRUE),
+                                      IQR = IQR(ColesPrice, na.rm = TRUE),
+                                      Max = max(ColesPrice,na.rm = TRUE),
+                                      range = Max - Min,
+                                      Mean = round(mean(ColesPrice, na.rm = TRUE),1),
+                                      SD = round(sd(ColesPrice, na.rm = TRUE),2))
+
+Store %>% group_by(Category) %>% summarise(Min = min(WoolworthsPrice,na.rm = TRUE),
+                                      Q1 = quantile(WoolworthsPrice,probs = .25,na.rm = TRUE),
+                                      Median = median(WoolworthsPrice, na.rm = TRUE),
+                                      Q3 = quantile(WoolworthsPrice,probs = .75,na.rm = TRUE),
+                                      IQR = IQR(WoolworthsPrice, na.rm = TRUE),
+                                      Max = max(WoolworthsPrice,na.rm = TRUE),
+                                      range = Max - Min,
+                                      Mean = round(mean(WoolworthsPrice, na.rm = TRUE),1),
+                                      SD = round(sd(WoolworthsPrice, na.rm = TRUE),2))
+
+
+  
+boxplot(Store$ColesPrice,Store$WoolworthsPrice,main="Box plot of Overall Prices between 2 stores")
+axis(1, at=1:2, labels=c("Coles","Woolworths"))  
+
+Fruits<- Store %>% filter(Category=="Fruits")
+boxplot(Fruits$ColesPrice,Fruits$WoolworthsPrice,main="Box plot of Fruit Prices between 2 stores")
+axis(1, at=1:2, labels=c("Coles","Woolworths"))  
+
+
+Veg<- Store %>% filter(Category=="Veg")
+boxplot(Fruits$ColesPrice,Fruits$WoolworthsPrice,main="Box plot of Veg Prices between 2 stores")
+axis(1, at=1:2, labels=c("Coles","Woolworths"))
+
+Dairy<- Store %>% filter(Category=="Dairy")
+boxplot(Dairy$ColesPrice,Dairy$WoolworthsPrice,main="Box plot of Dairy Prices between 2 stores")
+axis(1, at=1:2, labels=c("Coles","Woolworths"))
+
+Drinks<- Store %>% filter(Category=="Drinks")
+boxplot(Drinks$ColesPrice,Drinks$WoolworthsPrice,main="Box plot of Drinks Prices between 2 stores")
+axis(1, at=1:2, labels=c("Coles","Woolworths"))
+
+Breakfast<- Store %>% filter(Category=="Breakfast")
+boxplot(Breakfast$ColesPrice,Breakfast$WoolworthsPrice,main="Box plot of Breakfast Prices between 2 stores")
+axis(1, at=1:2, labels=c("Coles","Woolworths"))
+
+Snacks<- Store %>% filter(Category=="Snacks")
+boxplot(Snacks$ColesPrice,Snacks$WoolworthsPrice,main="Box plot of Snacks Prices between 2 stores")
+axis(1, at=1:2, labels=c("Coles","Woolworths"))
+
+Raw<- Store %>% filter(Category=="Raw")
+boxplot(Raw$ColesPrice,Raw$WoolworthsPrice,main="Box plot of Raw Prices between 2 stores")
+axis(1, at=1:2, labels=c("Coles","Woolworths"))
+
+Frozen<- Store %>% filter(Category=="Frozen")
+boxplot(Frozen$ColesPrice,Frozen$WoolworthsPrice,main="Box plot of Frozen Prices between 2 stores")
+axis(1, at=1:2, labels=c("Coles","Woolworths"))
+
+
+#remember to plot histograms for each of the sub categories in the data visualization section
+
+
+```
+
+
+## Hypothesis Test
+
+Use R to perform an appropriate hypothesis test to determine which supermarket is the cheapest. You need to explain your choice of hypothesis test, any assumptions and the significance level. 
+
+```{r}
+# This is a chunk for your hypothesis testing code.
+
+#Overall hypothesis test for Both Stores
+t.test(Store$ColesPrice,Store$WoolworthsPrice,data=Store,mu=0)
+
+
+#Hypothesis test for Fruit Prices for both stores
+t.test(Fruits$ColesPrice,Fruits$WoolworthsPrice,data=Store,mu=0)
+
+#Hypothesis test for Veg Prices for both stores
+t.test(Veg$ColesPrice,Veg$WoolworthsPrice,data=Store,mu=0)
+
+#Hypothesis test for Dairy Prices for both stores
+t.test(Dairy$ColesPrice,Dairy$WoolworthsPrice,data=Store,mu=0)
+
+#Hypothesis test for Drinks Prices for both stores
+t.test(Drinks$ColesPrice,Drinks$WoolworthsPrice,data=Store,mu=0)
+
+#Hypothesis test for Breakfast Prices for both stores
+t.test(Breakfast$ColesPrice,Breakfast$WoolworthsPrice,data=Store,mu=0)
+
+#Hypothesis test for Snacks Prices for both stores
+t.test(Snacks$ColesPrice,Snacks$WoolworthsPrice,data=Store,mu=0)
+
+#Hypothesis test for Raw Prices for both stores
+t.test(Raw$ColesPrice,Raw$WoolworthsPrice,data=Store,mu=0)
+
+#Hypothesis test for Frozen Prices for both stores
+t.test(Frozen$ColesPrice,Frozen$WoolworthsPrice,data=Store,mu=0)
+
+
+
+
+```
+
+
+## Interpretation
+
+Interpret the results of the hypothesis test by interpreting the $p$-value and confidence intervals and commenting on the statistical significance of the findings. 
+
+
+#include descriptions of the summarise functions
+#include descriptions of the box plots
+#explain histograms for each of the sub categories in the data visualization section
+
+According to the Central Limit Theorem, as the sample size  was 70>30, we can ignore the normality assumption for superstores samples we have collected from Coles and Woolsworths.  
+
+#levene test perform 
+#check levene test results
+#write the leven test results here
+
+A two-sample t-test was used to test for a significant difference between the mean product prices of Coles and Woolsworths. Since p = 0.768>= 0.05, we failed to reject the null hypotheses. The results of the two-sample t-test assuming unequal variance found  not statistically significant difference between the mean product price of Coles and Woolworths, t(df=154.63) = -0.29549, p = 0.768, 95% CI for the difference in means [-2.594525  1.919335]. The results of the investigation suggest that there is insufficient evidence to support that product price of Coles and Woolworths are different.
+
+
+
+
+## read it looks wrong
+While the for females exhibited evidence of non-normality upon inspection of the normal Q-Q plot, the central limit theorem ensured that the t-test could be applied due to the large sample size in each group. The Levene’s test of homogeneity of variance indicated that equal variance could be assumed. 
+## wrong ends here
+
+
+
+
+
+
+
+## Discussion 
+
+Discuss the findings of your investigation. What did you conclude? What were the strengths and limitations of your investigation? What improvements could be made or what would you do differently next time?
+
+
